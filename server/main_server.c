@@ -20,16 +20,19 @@ void *commandFunc(void *x_void_ptr)
         nCommand = getData( commandSocketFd );
         switch(nCommand)
         {
-            case 1:
+            case 0:
+                fprintf(stderr, "Pump on \n");
                 pumpOn();
 
             break;
 
-            case 2:
+            case 1:
+                fprintf(stderr, "Pump off \n");
                 pumpOff();
             break;
 
             default:
+                fprintf(stderr, "Nix kam an \n");
             break;
         }
     }
@@ -43,6 +46,16 @@ int main(int argc, char *argv[])
     int connSock;
     int adValue;
 
+
+    initMcp3008();
+    initPump();
+
+    socketServerFd = socketServerOpen(51718);
+    commandSocketServerFd = socketServerOpen(51719);
+
+    connSock = socketWaitForClient(socketServerFd);
+    commandSocketFd= socketWaitForClient(commandSocketServerFd);
+
     bCommandThread = true;
     if(pthread_create(&commandThread, NULL, commandFunc, NULL) )
     {
@@ -50,27 +63,12 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    socketServerFd = socketServerOpen(51718);
-    commandSocketServerFd = socketServerOpen(51719);
-
-
-    //connSock = socketWaitForClient(socketServerFd);
-    //commandSocketFd= socketWaitForClient(commandSocketServerFd);
-
-    initMcp3008();
-    initPump();
-
-    while(1)
-    {
-        pumpOn();
-        pumpOff();
-    }
-
     while(1)
     {
         adValue = getAdValue(0);
         fprintf(stderr, "AD-Wert Kanal %d ist %d \n", 0, adValue);
         sendData( connSock, adValue );
+        sleep(1);
     }
     exitPump();
     exitMcp3008();

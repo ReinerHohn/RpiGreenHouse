@@ -26,73 +26,73 @@ If the server receives -2, it exits.
 #include <errno.h>
 
 
-static void error( char *msg );
+static void error(char* msg);
 
-void sendData( int sockfd, int x )
+void sendData(int sockfd, int x)
 {
-  int     n;
-  char    buffer[32];
+    int     n;
+    char    buffer[32];
+    sprintf(buffer, "%d\n", x);
 
-  sprintf( buffer, "%d\n", x );
-  if ( (n = write( sockfd, buffer, strlen(buffer) ) ) < 0 )
-  {
-    error( ( "ERROR writing to socket") );
-  }
-  buffer[n] = '\0';
+    if ((n = write(sockfd, buffer, strlen(buffer))) < 0)
+    {
+        error(("ERROR writing to socket"));
+    }
+
+    buffer[n] = '\0';
 }
 
-int getData( int sockfd )
+int getData(int sockfd)
 {
-  char buffer[32];
-  int n;
+    char buffer[32];
+    int n;
 
-  if ( (n = read(sockfd,buffer,31) ) < 0 )
-  {
-    error( ( "ERROR reading from socket") );
-  }
-  buffer[n] = '\0';
+    if ((n = read(sockfd, buffer, 31)) < 0)
+    {
+        error(("ERROR reading from socket"));
+    }
 
-  return atoi( buffer );
+    buffer[n] = '\0';
+    return atoi(buffer);
 }
 
 int socketServerOpen(int portno)
 {
     int sockfd;
     struct sockaddr_in serv_addr;
-
-    printf( "using port #%d\n", portno );
-
+    printf("using port #%d\n", portno);
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
     if (sockfd < 0)
     {
-        error( ("ERROR opening socket") );
+        error(("ERROR opening socket"));
     }
-    bzero((char *) &serv_addr, sizeof(serv_addr));
 
+    bzero((char*) &serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons( portno );
-    if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
-    {
-      error( ( "ERROR on binding" ) );
-    }
-    listen(sockfd,5);
+    serv_addr.sin_port = htons(portno);
 
+    if (bind(sockfd, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) < 0)
+    {
+        error(("ERROR on binding"));
+    }
+
+    listen(sockfd, 5);
     return sockfd;
 }
 
-int socketWaitForClient( int sockfd)
+int socketWaitForClient(int sockfd)
 {
     int newsockfd;
     struct sockaddr_in cli_addr;
     int clilen;
-
     clilen = sizeof(cli_addr);
+    printf("waiting for new client...\n");
 
-    printf( "waiting for new client...\n" );
-    if ( ( newsockfd = accept( sockfd, (struct sockaddr *) &cli_addr, (socklen_t*) &clilen) ) < 0 )
+    if ((newsockfd = accept(sockfd, (struct sockaddr*) &cli_addr, (socklen_t*) &clilen)) < 0)
     {
-        error( ("ERROR on accept") );
+        error(("ERROR on accept"));
     }
 
     return newsockfd;
@@ -100,13 +100,13 @@ int socketWaitForClient( int sockfd)
 
 void socketServerClose(int fd)
 {
-    close( fd );
+    close(fd);
 }
 
-void error( char *msg )
+void error(char* msg)
 {
-  perror(  msg );
-  exit(1);
+    perror(msg);
+    exit(1);
 }
 
 
