@@ -2,7 +2,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "mcp3008.h"
+#include <stdlib.h>
+#include <unistd.h>
+
+#include "cc3200CapSens.h"
 #include "socketComm.h"
 #include "pump.h"
 
@@ -11,13 +14,21 @@ pthread_t commandThread;
 int commandSocketServerFd;
 int commandSocketFd;
 
+#define  recLength 2
+#define sendLength 9
+
+static char recBuf[recLength];
+char sendBuf[sendLength];
+
 bool bCommandThread = true;
 int  nCommand;
+
 void *commandFunc(void *x_void_ptr)
 {
     while(bCommandThread)
     {
-        nCommand = getData( commandSocketFd );
+        getData( commandSocketFd, recBuf, recLength - 1);
+        nCommand = strtoul(recBuf, NULL, 10);
         switch(nCommand)
         {
             case 0:
@@ -47,7 +58,12 @@ int main(int argc, char *argv[])
     int adValue;
 
 
-    initMcp3008();
+
+    initcc3200CapSens();
+    getHumValue();
+
+
+
     initPump();
 
     socketServerFd = socketServerOpen(51718);
@@ -65,13 +81,12 @@ int main(int argc, char *argv[])
 
     while(1)
     {
-        adValue = getAdValue(0);
-        fprintf(stderr, "AD-Wert Kanal %d ist %d \n", 0, adValue);
-        sendData( connSock, adValue );
+        //snprintf(sendBuf, sizeof(sendBuf), "%d;%d;",getAdValue(0), getAdValue(1) );
+        //fprintf(stderr, "AD-Wert Kanal 0 ist %d, Kanal 1 ist %d \n", getAdValue(0), getAdValue(1));
+        sendData( connSock, sendBuf, sendLength );
         sleep(1);
     }
     exitPump();
-    exitMcp3008();
 
     socketServerClose(socketServerFd);
 

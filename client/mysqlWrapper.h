@@ -10,6 +10,7 @@ int sqlWrapConnect(MYSQL* connection, char* hostname, char* port, char* username
 MYSQL_RES* sqlWrapQuery(MYSQL* connection, char* query);
 
 int sqlParse(MYSQL* connection, MYSQL_RES* result);
+long sqlWrapgetRow(MYSQL* connection, MYSQL_RES* result);
 void sqlWrapClose(MYSQL* connection);
 
 

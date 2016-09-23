@@ -43,32 +43,28 @@ void socketClientConnect(int sockfd, struct hostent* server, int portno)
     }
 }
 
-void sendData(int sockfd, int x)
+int sendData(int sockfd, char *buffer, int nLength)
 {
     int n;
-    char buffer[32];
-    sprintf(buffer, "%d\n", x);
 
     if ((n = write(sockfd, buffer, strlen(buffer))) < 0)
     {
         error(("ERROR writing to socket"));
     }
 
-    buffer[n] = '\0';
+    return n;
 }
 
-int getData(int sockfd)
+int recData(int sockfd, char* buffer, int nLength)
 {
-    char buffer[32];
     int n;
 
-    if ((n = read(sockfd, buffer, 31)) < 0)
+    if ((n = read(sockfd, buffer, nLength)) < 0)
     {
         error(("ERROR reading from socket"));
     }
 
-    buffer[n] = '\0';
-    return atoi(buffer);
+    return n;
 }
 
 void socketClientClose(int sockfd)

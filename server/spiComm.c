@@ -37,7 +37,7 @@ int transfer(int fd, const char* pszTxData, uint8_t u8TxLength, char* pszRxData,
     struct spi_ioc_transfer tr = {
         .tx_buf = (unsigned long)pszTxData,
                 .rx_buf = (unsigned long)pszRxData,
-                .len = ARRAY_SIZE(pszTxData),
+                .len = u8TxLength,
                 .delay_usecs = u16Delay,
                 .speed_hz = u32Speed,
                 .bits_per_word = u8Bits,

@@ -1,14 +1,15 @@
 project(rpiGreenHouse_client C)
 cmake_minimum_required(VERSION 3.0)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -std=gnu99")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -std=gnu99") # -gdwarf-3
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lpthread")
 
 list(APPEND SRC_LIST_CLIENT 	"main_client.c"
                                 "socketClient.c"    "socketClient.h"
                                 "fifo.c"            "fifo.h"
-                                "mysqlWrapper.c"    "mysqlWrapper.h")
+                                "mysqlWrapper.c"    "mysqlWrapper.h"
+                                "dataB.c"           "dataB.h")
 
 add_executable("${PROJECT_NAME}" ${SRC_LIST_CLIENT})
 

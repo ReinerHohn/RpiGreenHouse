@@ -2,19 +2,23 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdbool.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "socketClient.h"
 #include "fifo.h"
-#include "mysqlWrapper.h"
+#include "dataB.h"
 
-static int data;
+char arecData[1024];
+char asendData[1024];
+
 static bool bDataThread;
 static int sockfdData;
 
 static CON_Fifo_t* Fifo;
 static CON_Fifo_t TFifo;
 
-static int var;
+static int g_var;
 
 static pthread_mutex_t count_mutex;
 static pthread_cond_t count_threshold_cv;
@@ -22,52 +26,77 @@ static pthread_cond_t count_threshold_cv;
 static int pumpOn = 0;
 static int pumpOff = 1;
 
+static int nGrenze = 550;
+static MYSQL* connection;
+
 int sockfdCommand;
 
-void *dataRecThread(void* arg)
-{
-    while(bDataThread)
-    {
-        data = getData(sockfdData);
+static int g_naData[32];
+int i;
 
+int nRecLength = 9;
+int nSendLength = 2;
+
+void* dataRecThread(void* arg)
+{
+    char pTemp[3];
+    while (bDataThread)
+    {
+        recData(sockfdData, arecData, nRecLength);
+       // pTemp = (char*)malloc(3);
         pthread_mutex_lock(&count_mutex);
-        //if( !CON_BUF_FULL(Fifo) )
+        memcpy(pTemp, arecData, 3);
+        g_naData[0] = strtoul(pTemp, NULL, 10);
+        memcpy(pTemp, arecData + 4, 3);
+        g_naData[1] = strtoul(pTemp, NULL, 10);
+
+        char* pch;
+       // pch = strtok(pTemp, ";");
+
+        //while (pch != NULL)
         {
-            var = data;
-        //    CON_BUF_WR(Fifo, data);
+          //  g_naData[i] = strtoul(pTemp, NULL, 10);
+           // fprintf(stderr, "d\n", g_naData[i]);
+          //  pch = strtok(NULL, ";");
+
+            //i++;
         }
+        i = 0;
+        fprintf(stderr, "Feuchte1  %d, Feuchte 2 %d \n", g_naData[0], g_naData[1]);
         pthread_mutex_unlock(&count_mutex);
 
-        fprintf(stderr, "Feuchte  %d\n", data);
     }
 }
 
-static int nGrenze = 400;
 
-void * calcRecThread(void* arg)
+
+void* calcRecThread(void* arg)
 {
-    static int val;
-
-
-    while( bDataThread) //!CON_BUF_EMPTY(Fifo) )
+    while (bDataThread) //!CON_BUF_EMPTY(Fifo) )
     {
-        if( pthread_mutex_trylock(&count_mutex) == 0 )
+        if (pthread_mutex_trylock(&count_mutex) == 0)
         {
-            val = var; //CON_BUF_RD(Fifo);
+            dataBStoreHum(connection, 0, g_naData[0], 1, g_naData[1], pumpOn);
             /* only enter if new value was set */
-            if(var > nGrenze)
+            if (g_naData[0] > nGrenze)
             {
                 pthread_cond_signal(&count_threshold_cv);
-                var = 0;
-                sendData(sockfdCommand, pumpOn); //
+
+                // Wenn sicherheitssensor im Wasser
+                if (g_naData[1] < 500)
+                {
+                    sprintf(asendData, "%d", pumpOn);
+                    sendData(sockfdCommand, asendData, nSendLength); //
+                }
             }
-            else if(var > 0 && var < nGrenze)
+            else if (g_naData[0] > 0 && g_naData[0] < nGrenze)
             {
-                var = 0;
-                sendData(sockfdCommand, pumpOff); //
+
+                sprintf(asendData, "%d", pumpOff);
+                sendData(sockfdCommand, asendData, nSendLength);
             }
             pthread_mutex_unlock(&count_mutex);
-         }
+        }
     }
 }
 
@@ -75,63 +104,41 @@ int main(int argc, char* argv[])
 {
     pthread_t dataThread;
     pthread_t calcThread;
-
     int n;
     int res;
-
     struct hostent* phostent;
     Fifo = &TFifo;
     CON_BUF_RESET(Fifo);
     n = 0;
 
-    MYSQL* connection = sqlWrapOpen();
-    res = sqlWrapConnect(connection, "localhost", "0", "root", "root", NULL);
-
-    MYSQL_RES* result;
-    result = sqlWrapQuery(connection, "CREATE DATABASE temperatures;");
-    result = sqlWrapQuery(connection, "USE temperatures;");
-    result = sqlWrapQuery(connection, "CREATE USER 'logger'@'localhost' IDENTIFIED BY 'password';");
-    result = sqlWrapQuery(connection, "GRANT ALL PRIVILEGES ON temperatures.* TO 'logger'@'localhost';");
-    result = sqlWrapQuery(connection, "FLUSH PRIVILEGES;");
-    result = sqlWrapQuery(connection, "USE temperatures;");
-
-    result = sqlWrapQuery(connection, "INSERT INTO temperaturedata SET dateandtime='1234', sensor='1', humidity='450';");
-
-
-    result = sqlWrapQuery(connection, "CREATE TABLE temperaturedata (dateandtime DATETIME, sensor VARCHAR(32), humidity DOUBLE);");
-
-    result = sqlWrapQuery(connection, "SELECT * FROM temperaturedata;");
-
-
-    sqlParse(connection, result);
-    sqlWrapClose(connection);
-
-
+    connection = dataBInit();
+    //dataBInitDb(connection);
+    //dataBgetMeanHum(connection, 500, 1);
     phostent = socketClientOpen(&sockfdCommand, "192.168.178.79");
     socketClientConnect(sockfdCommand, phostent, 51719);
-
     phostent = socketClientOpen(&sockfdData, "192.168.178.79");
     socketClientConnect(sockfdData, phostent, 51718);
-
     bDataThread = true;
-    if(pthread_create(&dataThread, NULL, dataRecThread, NULL) )
-    {
-        perror("Error creating thread\n");
-        return 1;
-    }
-    if(pthread_create(&dataThread, NULL, calcRecThread, NULL) )
+
+    if (pthread_create(&dataThread, NULL, dataRecThread, NULL))
     {
         perror("Error creating thread\n");
         return 1;
     }
 
-    while(1)
+    if (pthread_create(&dataThread, NULL, calcRecThread, NULL))
+    {
+        perror("Error creating thread\n");
+        return 1;
+    }
+
+    while (1)
     {
         pthread_mutex_lock(&count_mutex);
         pthread_cond_wait(&count_threshold_cv, &count_mutex);
-
         pthread_mutex_unlock(&count_mutex);
     }
+
     socketClientClose(sockfdData);
     socketClientClose(sockfdCommand);
     return 0;

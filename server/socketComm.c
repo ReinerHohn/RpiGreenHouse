@@ -28,32 +28,24 @@ If the server receives -2, it exits.
 
 static void error(char* msg);
 
-void sendData(int sockfd, int x)
+int sendData(int sockfd, char* szData, int nLength)
 {
     int     n;
-    char    buffer[32];
-    sprintf(buffer, "%d\n", x);
 
-    if ((n = write(sockfd, buffer, strlen(buffer))) < 0)
+    if ((n = write(sockfd, szData, nLength)) < 0)
     {
         error(("ERROR writing to socket"));
     }
-
-    buffer[n] = '\0';
 }
 
-int getData(int sockfd)
+int getData(int sockfd, char* szData, int nLength)
 {
-    char buffer[32];
     int n;
 
-    if ((n = read(sockfd, buffer, 31)) < 0)
+    if ((n = read(sockfd, szData, nLength)) < 0)
     {
         error(("ERROR reading from socket"));
     }
-
-    buffer[n] = '\0';
-    return atoi(buffer);
 }
 
 int socketServerOpen(int portno)

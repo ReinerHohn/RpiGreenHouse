@@ -5,6 +5,7 @@
 #include <strings.h>
 #include <stdbool.h>
 
+#include <time.h>
 
 MYSQL* sqlWrapOpen()
 {
@@ -54,6 +55,20 @@ MYSQL_RES* sqlWrapQuery(MYSQL* connection, char* query)
     return result;
 }
 
+long sqlWrapgetRow(MYSQL* connection, MYSQL_RES* result)
+{
+    MYSQL_ROW row;
+
+    if( row = mysql_fetch_row(result))
+    {
+        return strtoul(row[0], NULL, 10);
+    }
+    else
+    {
+        return -1;
+    }
+}
+
 int sqlParse(MYSQL* connection, MYSQL_RES* result)
 {
     unsigned int num_fields;
@@ -73,10 +88,10 @@ int sqlParse(MYSQL* connection, MYSQL_RES* result)
 
         for (int i = 0; i < num_fields; i++)
         {
-            printf("[%.*s] ", (int) field_lengths[i], row[i] ? row[i] : "NULL");
+            fprintf(stderr, "[%.*s] ", (int) field_lengths[i], row[i] ? row[i] : "NULL");
         }
 
-        printf("\n");
+        fprintf(stderr, "\n");
     }
 
     /* Free result set */
@@ -87,3 +102,4 @@ void sqlWrapClose(MYSQL* connection)
 {
     mysql_close(connection);
 }
+
