@@ -60,7 +60,7 @@
   <valuemap type="QVariantMap">
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">{{target_name}}</value>
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">{{target_name}}</value>
-   <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{e0e941c2-ac8b-48d3-839c-f4c4c7039296}</value>
+   <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{{target_uuid}}</value>
    <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">1</value>

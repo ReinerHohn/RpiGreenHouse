@@ -9,7 +9,7 @@ import os.path
 import uuid
 
 def usage():
-    print("Usage: qtcreator_project.py [options] config.yml source_dir builddir cmake_args proj_name")
+    print("Usage: qtcreator_project.py [options] source_dir builddir cmake_args proj_name target_name target_uuid")
     print("Options:\n\t-h show this help")
 
 def render_template(tpl_path, doc_path, ctx):
@@ -27,7 +27,7 @@ def main():
         if o in ("-h", "--help"):
             usage()
             sys.exit()
-    if len(args) != 2:
+    if len(args) != 6:
         usage()
         sys.exit(2)
 
@@ -52,9 +52,10 @@ def main():
     cfg['env_id'] = uuid.uuid4()
     cfg['proj_conf_id'] = uuid.uuid4()
     cfg['build_dir'] = args[1]
-    cfg['cmake_args'] = "" # "-DCMAKE_BUILD_TYPE=Debug"
-    cfg['proj_name'] = "rpiGreenHouse_client"
-    cfg['target_name'] = "rpi_client"
+    cfg['cmake_args'] = ""
+    cfg['proj_name'] = args[3]
+    cfg['target_name'] = args[4]
+    cfg['target_uuid'] = args[5]
 
     try:
         os.makedirs(args[1])

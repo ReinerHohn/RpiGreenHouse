@@ -1,11 +1,11 @@
 #!/bin/sh
 
 SOURCE_DIR=$(pwd)
-BUILD_DIR="../client-build"
+BUILD_DIR="../server-build"
 CMAKE_ARGS="" # "-DCMAKE_BUILD_TYPE=Debug"
-PROJ_NAME="rpiGreenHouse_client"
-PROJ_TARGET="rpi_client"
-TARGET_UUID="{e0e941c2-ac8b-48d3-839c-f4c4c7039296}" # CLIENT
+PROJ_NAME="rpiGreenHouse_server"
+PROJ_TARGET="rpi_server"
+TARGET_UUID="{b91582c8-2694-46d2-8264-c37861ff70b2}" # SERVER
 
 TOOLCH_FILE="/home/michael/development/git/toolchain/usr/share/buildroot/toolchainfile.cmake"
 
