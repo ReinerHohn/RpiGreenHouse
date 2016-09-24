@@ -9,7 +9,7 @@ import os.path
 import uuid
 
 def usage():
-    print("Usage: qtcreator_project.py [options] config.yml objdir builddir toolchainfile")
+    print("Usage: qtcreator_project.py [options] config.yml source_dir builddir cmake_args proj_name")
     print("Options:\n\t-h show this help")
 
 def render_template(tpl_path, doc_path, ctx):
@@ -27,37 +27,46 @@ def main():
         if o in ("-h", "--help"):
             usage()
             sys.exit()
-    if len(args) != 4:
+    if len(args) != 2:
         usage()
         sys.exit(2)
 
     # load yaml build config
-    cfg = yaml.load(open(args[0]))
+    # cfg = yaml.load(open(args[0]))
 
     # convert to template compatible structure
-    files = []
-    for file in cfg['sources']:
-        if os.access(file, os.F_OK):
-            files.append({'name': os.path.basename(file), 'path': file})
-    cfg['sources'] = files
+    #files = []
+    #for file in cfg['sources']:
+    #    if os.access(file, os.F_OK):
+    #        files.append({'name': os.path.basename(file), 'path': file})
+    #cfg['sources'] = files
 
     # misc files
-    files = []
-    for file in cfg['files']:
-        if os.access(file, os.F_OK):
-            files.append({'name': os.path.basename(file), 'path': file})
-    cfg['files'] = files
+    #files = []
+    #for file in cfg['files']:
+    #    if os.access(file, os.F_OK):
+    #        files.append({'name': os.path.basename(file), 'path': file})
+    #cfg['files'] = files
 
-    cfg['config_id'] = uuid.uuid4()
-    cfg['build_loc'] = args[2]
-    cfg['arguments'] = args[3]
+    cfg = {}
+    cfg['env_id'] = uuid.uuid4()
+    cfg['proj_conf_id'] = uuid.uuid4()
+    cfg['build_dir'] = args[1]
+    cfg['cmake_args'] = "" # "-DCMAKE_BUILD_TYPE=Debug"
+    cfg['proj_name'] = "rpiGreenHouse_client"
+    cfg['target_name'] = "rpi_client"
 
     try:
         os.makedirs(args[1])
     except Exception as e:
         pass
 
+    lists_txt_path = os.path.join(args[0], 'CMakeLists.txt.user')
+
+    if os.path.exists(lists_txt_path):
+        os.remove(lists_txt_path)
+
     # create CMakelists.txt.user file
-    render_template(os.path.join(os.path.dirname(sys.argv[0]), "dot-project.tpl"), os.path.join(args[1], 'CMakelists.txt.user'), cfg)
+    render_template("CMakeLists.user-tpl", lists_txt_path, cfg)
 if __name__ == "__main__":
     main()
