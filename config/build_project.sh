@@ -22,6 +22,6 @@ cd ../config && python "qtcreator_project.py" "$SOURCE_DIR2" "$BUILD_DIR2"
 
 cd $BUILD_DIR2 && echo "PDW" && pwd && cmake -DCMAKE_TOOLCHAIN_FILE=$TOOLCH_FILE -G"Unix Makefiles" $SOURCE_DIR2 # Ninja  
 
-/home/michael/qtcreator-3.5.82/bin/qtcreator & 
+/home/michael/qtcreator-3.5.82/bin/qtcreator $SOURCE_DIR2 & 
 
 
