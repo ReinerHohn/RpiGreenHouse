@@ -1,8 +1,21 @@
+/**************************************************************************//**
+ * @file   pump.c
+ *
+ * @brief  Gpio-Funktionen zum Ansteuern der Pumpen
+ * 
+ * @author Michael Dick	
+ * @date   9.10.2016
+ *****************************************************************************/ 
+
 #include "gpio.h"
 #include "pump.h"
 
 #define PUMP_PIN 23
 
+/**************************************************************************//**
+ * @brief  Setzt die Pins für die Pumpe
+ * @return Non-Zero if error   
+ *****************************************************************************/ 
 int initPump()
 {
     if (-1 == GPIOExport(PUMP_PIN) )

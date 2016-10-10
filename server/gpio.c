@@ -1,3 +1,12 @@
+/**************************************************************************//**
+ * @file   gpio.c
+ *
+ * @brief  Gpio-Funktionen zum Exportieren im sysfs
+ * 
+ * @author Michael Dick	
+ * @date   9.10.2016
+ *****************************************************************************/ 
+
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
@@ -7,7 +16,12 @@
  
 #include "gpio.h"
 
- 
+
+/**************************************************************************//**
+ * @brief  Exporting a pin sysfs
+ * @param pin Number of pin
+ * @return Zero if no error   
+ *****************************************************************************/ 
 int GPIOExport(int pin)
 {
 #define BUFFER_MAX 3
