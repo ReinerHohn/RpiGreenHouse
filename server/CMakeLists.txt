@@ -27,7 +27,8 @@ list(APPEND SRC_LIST_SERVER    	main_server.c
                                 socketComm.h    socketComm.c
                                 cc3200CapSens.c cc3200CapSens.h #mcp3008.c     mcp3008.h
                                 gpio.c          gpio.h
-                                pump.c          pump.h)
+                                pump.c          pump.h
+                                unittestc.c unittestc.h)
 
 #add_library(SOCKETLIB SHARED socketComm.h    socketComm.c)
 
@@ -36,3 +37,6 @@ list(APPEND SRC_LIST_SERVER    	main_server.c
 add_executable("${PROJECT_NAME}" ${SRC_LIST_SERVER})
 
 #target_link_libraries(${PROJECT_NAME} SOCKETLIB)
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/CUnit/include)
+target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/CUnit/lib/libcunit.a)
