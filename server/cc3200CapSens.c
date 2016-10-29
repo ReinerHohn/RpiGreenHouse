@@ -1,7 +1,7 @@
 #include "spiComm.h"
 
 #include <stdio.h>
-#include <time.h>
+#include <unistd.h>
 
 static int fd;
 
@@ -35,11 +35,11 @@ int getHumValue()
 
         if(ulFreq < 100000000)
         {
-            fprintf(stderr, "Frequency : %d Hz Wassser \n\r", ulFreq);
+            fprintf(stderr, "Frequency : %lu Hz Wassser \n\r", ulFreq);
         }
         else
         {
-            fprintf(stderr, "Frequency : %d Hz Luft\n\r", ulFreq);
+            fprintf(stderr, "Frequency : %lu Hz Luft\n\r", ulFreq);
         }
         usleep(1000000);
     }

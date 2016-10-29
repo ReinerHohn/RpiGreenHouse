@@ -26,6 +26,7 @@ int initPump()
 	{
 		return(2);
 	}
+    return 0;
 }
 
 
@@ -35,6 +36,7 @@ int exitPump()
 	{
 		return(4);
 	}
+    return 0;
 }
 	
 int pumpOn()
@@ -43,6 +45,7 @@ int pumpOn()
 	{
 		return(3);
 	}
+    return 0;
 }
 
 int pumpOff()
@@ -51,4 +54,5 @@ int pumpOff()
 	{
 		return(3);
 	}
+    return 0;
 }

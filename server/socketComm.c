@@ -14,6 +14,8 @@ If the server receives -1 it closes the socket with the client.
 If the server receives -2, it exits.
 */
 
+#include "socketComm.h"
+
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -26,7 +28,7 @@ If the server receives -2, it exits.
 #include <errno.h>
 
 
-static void error(char* msg);
+static void error(char* msg) __attribute__ ((noreturn));
 
 int sendData(int sockfd, char* szData, int nLength)
 {
@@ -36,6 +38,7 @@ int sendData(int sockfd, char* szData, int nLength)
     {
         error(("ERROR writing to socket"));
     }
+    return n;
 }
 
 int getData(int sockfd, char* szData, int nLength)
@@ -46,6 +49,7 @@ int getData(int sockfd, char* szData, int nLength)
     {
         error(("ERROR reading from socket"));
     }
+    return n;
 }
 
 int socketServerOpen(int portno)
