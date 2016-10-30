@@ -29,7 +29,6 @@ list(APPEND SRC_SERVER    	gpio.c          gpio.h)
 list(APPEND SRC_SERVER    	pump.c          pump.h)
 
 if(BUID_UTEST)
-#    list(APPEND SRC_SERVER_UTEST utest/unittestc.c utest/unittestc.h)
     list(APPEND SRC_SERVER_UTEST utest/cutester.c)
 endif()
 
@@ -42,8 +41,8 @@ endif()
 add_executable("${PROJECT_NAME}" ${SRC_SERVER})
 if(BUID_UTEST)
     add_executable("${PROJECT_NAME}_utest" ${SRC_SERVER_UTEST})
-    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/CUnit/include)
-    target_link_libraries("${PROJECT_NAME}_utest" "${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/CUnit/lib/libcunit.a")
+    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/CUnit-arm/include/)
+    target_link_libraries("${PROJECT_NAME}_utest" "${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/CUnit-arm/lib//libcunit.a")
 endif()
 
 #add_deployment_file(${PROJECT_NAME}  "/home/pi")

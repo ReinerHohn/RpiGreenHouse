@@ -18,6 +18,8 @@ void runTests()
     pSuite = CU_add_suite("Sockettest", NULL, NULL);
     CU_add_test(pSuite, "TransferTest", sockTransferTest);
 
+    CU_automated_run_tests();
+
     CU_cleanup_registry();
 }
 
