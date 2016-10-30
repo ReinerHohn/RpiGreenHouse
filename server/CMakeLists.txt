@@ -1,44 +1,55 @@
 project(rpiGreenHouse_server)
 cmake_minimum_required(VERSION 2.8)
-#aux_source_directory(. SRC_LIST)
 
-include (../config/external_toolgen.cmake)
-#file(WRITE "${CMAKE_SOURCE_DIR}/QtCreatorDeployment.txt" "/home/pi\n")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../config/cmake/")
 
-macro(add_deployment_file SRC DEST)
-    file(RELATIVE_PATH path ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-    file(APPEND "${CMAKE_SOURCE_DIR}/QtCreatorDeployment.txt" "${path}/${SRC}:${DEST}\n")
-endmacro()
+include (external_toolgen)
+include (macros)
 
-macro(add_deployment_directory SRC DEST)
-    file(GLOB_RECURSE files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${SRC}/*")
-    foreach(filename ${files})
-        get_filename_component(path ${filename} PATH)
-        add_deployment_file("${filename}" "${DEST}/${path}")
-    endforeach(filename)
-endmacro()
+INCLUDE_DIRECTORIES(.)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -g -gdwarf-3") #std=gnu99
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage -Wpedantic -Wdocumentation -Weverything")
 
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lpthread")
 
-list(APPEND SRC_LIST_SERVER    	main_server.c
-                                spiComm.h       spiComm.c
-                                socketComm.h    socketComm.c
-                                cc3200CapSens.c cc3200CapSens.h #mcp3008.c     mcp3008.h
-                                gpio.c          gpio.h
-                                pump.c          pump.h
-                                unittestc.c unittestc.h)
+list(APPEND SRC_SERVER    	main_server.c)
+list(APPEND SRC_SERVER    	spiComm.h       spiComm.c)
 
-#add_library(SOCKETLIB SHARED socketComm.h    socketComm.c)
-set(_SRCS ${SRC_LIST_SERVER})
-create_doxygen()
+list(APPEND SRC_SERVER    	socket/socketComm.h    socket/socketComm.c)
+if(BUID_UTEST)
+    list(APPEND SRC_SERVER_UTEST socket/utest/socketTest.c)
+    list(APPEND SRC_SERVER_UTEST socket/utest/socketTest.h)
+endif()
+
+list(APPEND SRC_SERVER    	cc3200CapSens.c cc3200CapSens.h)
+list(APPEND SRC_SERVER    	mcp3008.c       mcp3008.h)
+list(APPEND SRC_SERVER    	gpio.c          gpio.h)
+list(APPEND SRC_SERVER    	pump.c          pump.h)
+
+if(BUID_UTEST)
+#    list(APPEND SRC_SERVER_UTEST utest/unittestc.c utest/unittestc.h)
+    list(APPEND SRC_SERVER_UTEST utest/cutester.c)
+endif()
+
+if(NOT BUID_UTEST)
+    set(_SRCS ${SRC_SERVER})
+    create_doxygen()
+endif()
+
+
+add_executable("${PROJECT_NAME}" ${SRC_SERVER})
+if(BUID_UTEST)
+    add_executable("${PROJECT_NAME}_utest" ${SRC_SERVER_UTEST})
+    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/CUnit/include)
+    target_link_libraries("${PROJECT_NAME}_utest" "${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/CUnit/lib/libcunit.a")
+endif()
 
 #add_deployment_file(${PROJECT_NAME}  "/home/pi")
-
-add_executable("${PROJECT_NAME}" ${SRC_LIST_SERVER})
-
+#add_library(SOCKETLIB SHARED socketComm.h    socketComm.c)
 #target_link_libraries(${PROJECT_NAME} SOCKETLIB)
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/CUnit/include)
-target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/CUnit/lib/libcunit.a)
+
+
+

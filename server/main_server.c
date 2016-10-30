@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #include "cc3200CapSens.h"
-#include "socketComm.h"
+#include "socket/socketComm.h"
 #include "pump.h"
 
 /* this variable is our reference to the second thread */

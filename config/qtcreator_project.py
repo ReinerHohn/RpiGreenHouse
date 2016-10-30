@@ -9,7 +9,7 @@ import os.path
 import uuid
 
 def usage():
-    print("Usage: qtcreator_project.py [options] source_dir builddir cmake_args proj_name target_name target_uuid")
+    print("Usage: qtcreator_project.py [options] builddir proj_name target_name target_uuid")
     print("Options:\n\t-h show this help")
 
 def render_template(tpl_path, doc_path, ctx):
@@ -27,7 +27,7 @@ def main():
         if o in ("-h", "--help"):
             usage()
             sys.exit()
-    if len(args) != 6:
+    if len(args) != 4:
         usage()
         sys.exit(2)
 
@@ -52,10 +52,9 @@ def main():
     cfg['env_id'] = uuid.uuid4()
     cfg['proj_conf_id'] = uuid.uuid4()
     cfg['build_dir'] = args[1]
-    cfg['cmake_args'] = ""
-    cfg['proj_name'] = args[3]
-    cfg['target_name'] = args[4]
-    cfg['target_uuid'] = args[5]
+    cfg['proj_name'] = args[2]
+    cfg['target_name'] = args[3]
+    cfg['target_uuid'] = args[4]
 
     try:
         os.makedirs(args[1])

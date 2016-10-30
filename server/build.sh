@@ -2,7 +2,7 @@
 
 SOURCE_DIR=$(pwd)
 BUILD_DIR="../server-build"
-CMAKE_ARGS="" # "-DCMAKE_BUILD_TYPE=Debug"
+CMAKE_ARGS="$1"
 PROJ_NAME="rpiGreenHouse_server"
 PROJ_TARGET="rpi_server"
 TARGET_UUID="{b91582c8-2694-46d2-8264-c37861ff70b2}" # SERVER
