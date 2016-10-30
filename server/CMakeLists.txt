@@ -2,7 +2,7 @@ project(rpiGreenHouse_server)
 cmake_minimum_required(VERSION 2.8)
 #aux_source_directory(. SRC_LIST)
 
-
+include (../config/external_toolgen.cmake)
 #file(WRITE "${CMAKE_SOURCE_DIR}/QtCreatorDeployment.txt" "/home/pi\n")
 
 macro(add_deployment_file SRC DEST)
@@ -31,6 +31,8 @@ list(APPEND SRC_LIST_SERVER    	main_server.c
                                 unittestc.c unittestc.h)
 
 #add_library(SOCKETLIB SHARED socketComm.h    socketComm.c)
+set(_SRCS ${SRC_LIST_SERVER})
+create_doxygen()
 
 #add_deployment_file(${PROJECT_NAME}  "/home/pi")
 
