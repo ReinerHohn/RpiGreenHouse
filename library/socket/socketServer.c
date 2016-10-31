@@ -14,7 +14,7 @@ If the server receives -1 it closes the socket with the client.
 If the server receives -2, it exits.
 */
 
-#include "socketComm.h"
+#include "socketServer.h"
 
 #include <stdio.h>
 #include <sys/types.h>

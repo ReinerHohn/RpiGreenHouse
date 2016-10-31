@@ -9,7 +9,7 @@ import os.path
 import uuid
 
 def usage():
-    print("Usage: qtcreator_project.py [options] builddir proj_name target_name target_uuid")
+    print("Usage: qtcreator_project.py [options] source_dir builddir proj_name target_name target_uuid")
     print("Options:\n\t-h show this help")
 
 def render_template(tpl_path, doc_path, ctx):
@@ -27,7 +27,7 @@ def main():
         if o in ("-h", "--help"):
             usage()
             sys.exit()
-    if len(args) != 4:
+    if len(args) != 5:
         usage()
         sys.exit(2)
 
@@ -51,17 +51,18 @@ def main():
     cfg = {}
     cfg['env_id'] = uuid.uuid4()
     cfg['proj_conf_id'] = uuid.uuid4()
+    cfg['source_dir'] = args[0]
     cfg['build_dir'] = args[1]
     cfg['proj_name'] = args[2]
     cfg['target_name'] = args[3]
     cfg['target_uuid'] = args[4]
 
     try:
-        os.makedirs(args[1])
+        os.makedirs(cfg['build_dir'])
     except Exception as e:
         pass
 
-    lists_txt_path = os.path.join(args[0], 'CMakeLists.txt.user')
+    lists_txt_path = os.path.join(cfg['source_dir'], 'CMakeLists.txt.user')
 
     if os.path.exists(lists_txt_path):
         os.remove(lists_txt_path)

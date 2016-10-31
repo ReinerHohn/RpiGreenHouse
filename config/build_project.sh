@@ -1,12 +1,13 @@
 #!/bin/sh
 
-SOURCE_DIR=$1
-BUILD_DIR=$2
-CMAKE_ARGS=$3
-PROJ_NAME=$4
-PROJ_TARGET=$5
-TARGET_UUID=$6
-TOOLCH_FILE=$7
+ROOT=$1
+SOURCE_DIR=$2
+BUILD_DIR=$3
+CMAKE_ARGS=$4
+PROJ_NAME=$5
+PROJ_TARGET=$6
+TARGET_UUID=$7
+TOOLCH_FILE=$8
 
 SOURCE_DIR2=$(readlink -m $SOURCE_DIR)
 BUILD_DIR2=$(readlink -m $BUILD_DIR)
@@ -19,8 +20,11 @@ fi
 # Then recreate it!
 mkdir -p "$BUILD_DIR2"
 
+
+echo TARGET_UUID $TARGET_UUID
+
 # Generate CMakeLists.txt.user (holding project information)
-cd ../config && python "qtcreator_project.py" "$BUILD_DIR2" "$PROJ_NAME" "$PROJ_TARGET" "$TARGET_UUID"
+cd $ROOT/config && python qtcreator_project.py "$SOURCE_DIR2" "$BUILD_DIR2" "$PROJ_NAME" "$PROJ_TARGET" "$TARGET_UUID"
 
 # Generate Makefiles with CMake
 cd $BUILD_DIR2 && cmake -DCMAKE_TOOLCHAIN_FILE=$TOOLCH_FILE -G"Unix Makefiles" $SOURCE_DIR2 "$CMAKE_ARGS" # Ninja  
