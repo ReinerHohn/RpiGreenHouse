@@ -4,13 +4,14 @@ macro(init)
 endmacro(init)
 
 function(create_doxygen)
-	init()
 	create_yaml()
 	execute_process(COMMAND ${CMAKE_SOURCE_DIR}/../config/external_toolgen.py ${YAML_FILE} -d)
 	execute_process(COMMAND doxygen ${DOXY_FILE})
 endfunction(create_doxygen)
 
 function(create_yaml)
+	init()
+
 	file(WRITE ${YAML_FILE} "project_name: ${CMAKE_PROJECT_NAME}")
 	file(APPEND ${YAML_FILE} "\r\n\r\n")
 	file(APPEND ${YAML_FILE} "target: ${CMAKE_PROJECT_NAME}")

@@ -8,8 +8,6 @@ PROJ_NAME="rpiGreenHouse_server"
 PROJ_TARGET="rpi_server"
 TARGET_UUID="{b91582c8-2694-46d2-8264-c37861ff70b2}" # SERVER
 
-echo 
-
 TOOLCH_FILE="/home/michael/development/git/toolchain/usr/share/buildroot/toolchainfile.cmake"
 #TOOLCH_FILE="/home/michael/development/git/toolchainfile_clang.cmake"
 #TOOLCH_FILE="/opt/tools/usr/share/buildroot/toolchainfile.cmake"
