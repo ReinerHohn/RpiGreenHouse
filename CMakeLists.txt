@@ -18,7 +18,6 @@ add_subdirectory(library/socket)
 add_subdirectory(thirdparty/CUnit)
 add_subdirectory(app)
 
-message(SRCS ist ${_SRCS})
 option(BUILD_UTEST "Build Unittests" OFF)
 
 create_yaml()
