@@ -1,4 +1,4 @@
-#include "socket/socketComm.h"
+#include "socketServer.h"
 
 void sockTransferTest(void)
 {

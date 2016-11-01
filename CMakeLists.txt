@@ -17,18 +17,14 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lpthread")
 set(LIBRARIES "")
 
 add_subdirectory(library/socket)
-
-foreach(lib ${LIBRARIES})
-    message("topelvel lib='${lib}'")
-endforeach()
-
+add_subdirectory(thirdparty/CUnit)
 add_subdirectory(app)
 
 message(SRCS ist ${_SRCS})
 
 create_yaml()
 
-if(NOT BUID_UTEST)
+if(NOT BUILD_UTEST)
 #    create_doxygen()
 endif()
 

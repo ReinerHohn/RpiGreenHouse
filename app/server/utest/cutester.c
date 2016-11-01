@@ -1,6 +1,6 @@
-#include "socket/utest/socketTest.h"
+#include "utest/socketServerTest.h"
 
-#include <CUnit/CUnit.h>
+#include <CUnit.h>
 
 void runTests(void);
 

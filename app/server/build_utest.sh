@@ -1,5 +1,5 @@
 #!/bin/sh
 
-CMAKE_ARGS="-DBUID_UTEST:BOOL     =ON"
+CMAKE_ARGS=-DBUILD_UTEST:BOOL=ON
 
-./build.sh "$CMAKE_ARGS"
+./build.sh $CMAKE_ARGS
