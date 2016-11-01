@@ -1,8 +1,9 @@
 #include "spiComm.h"
+#include <stdint.h>
 
 static int fd;
 
-int calculateAdValue(char* pszRxData, int a2dChannel);
+int calculateAdValue(uint8_t* pszRxData, int a2dChannel);
 
 void initMcp3008()
 {
@@ -33,7 +34,7 @@ int getAdValue(int a2dChannel)
     return a2dVal;
 }
 
-int calculateAdValue(char* pszRxData, int a2dChannel)
+int calculateAdValue(uint8_t* pszRxData, int a2dChannel)
 {
     int a2dVal = 0;
 
