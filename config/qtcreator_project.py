@@ -9,7 +9,7 @@ import os.path
 import uuid
 
 def usage():
-    print("Usage: qtcreator_project.py [options] source_dir builddir proj_name target_name target_uuid")
+    print("Usage: qtcreator_project.py [options] config.yml")
     print("Options:\n\t-h show this help")
 
 def render_template(tpl_path, doc_path, ctx):
@@ -27,36 +27,16 @@ def main():
         if o in ("-h", "--help"):
             usage()
             sys.exit()
-    if len(args) != 5:
+    if len(args) != 1:
         usage()
         sys.exit(2)
 
     # load yaml build config
-    # cfg = yaml.load(open(args[0]))
-
-    # convert to template compatible structure
-    #files = []
-    #for file in cfg['sources']:
-    #    if os.access(file, os.F_OK):
-    #        files.append({'name': os.path.basename(file), 'path': file})
-    #cfg['sources'] = files
-
-    # misc files
-    #files = []
-    #for file in cfg['files']:
-    #    if os.access(file, os.F_OK):
-    #        files.append({'name': os.path.basename(file), 'path': file})
-    #cfg['files'] = files
-
-    cfg = {}
+    cfg = yaml.load(open(args[0]))
     cfg['env_id'] = uuid.uuid4()
     cfg['proj_conf_id'] = uuid.uuid4()
-    cfg['source_dir'] = args[0]
-    cfg['build_dir'] = args[1]
-    cfg['proj_name'] = args[2]
-    cfg['target_name'] = args[3]
-    cfg['target_uuid'] = args[4]
-
+    cfg['target_uuid'] = "{" + cfg['target_uuid'] + "}"
+    
     try:
         os.makedirs(cfg['build_dir'])
     except Exception as e:
@@ -68,6 +48,6 @@ def main():
         os.remove(lists_txt_path)
 
     # create CMakelists.txt.user file
-    render_template("CMakeLists.user-tpl", lists_txt_path, cfg)
+    render_template(cfg['source_dir'] + "/config/CMakeLists.user-tpl", lists_txt_path, cfg)
 if __name__ == "__main__":
     main()

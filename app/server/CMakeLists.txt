@@ -19,4 +19,13 @@ target_link_libraries(${APP_NAME} ${LIBRARIES} ${PROTOBUF_LIBRARIES})
 target_include_directories(${APP_NAME} PUBLIC ${PROTOBUF_INCLUDE_DIRS})
 target_compile_options(${APP_NAME} PUBLIC ${PROTOBUF_CFLAGS_OTHER})
 
+# Qt creator stuff
+set(PROJ_TARGET rpi_server)
+set(TARGET_UUID "b91582c8-2694-46d2-8264-c37861ff70b2") # SERVER
+set(TARGET_UUID "b91582c8-2694-46d2-8264-c37861ff70b2")
+
+# Generate CMakeLists.txt.user (holding project information)
+create_qtcreator()
+
+# Sources for qtcreator
 list(APPEND _SRCS ${SRC_SERVER} PARENT_SCOPE)
