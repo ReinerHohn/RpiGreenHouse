@@ -24,7 +24,6 @@ target_include_directories(${module_name} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/)
 
 list(APPEND libs_temp ${module_name})
 set(LIBRARIES ${LIBRARIES} ${libs_temp} PARENT_SCOPE)
-
-list(APPEND _SRCS ${SRC_SOCKET} ${SRC_SOCKET_UTEST} PARENT_SCOPE)
+set(_SRCS ${_SRCS} ${SRC_SOCKET} ${SRC_SOCKET_UTEST} PARENT_SCOPE)
 
 

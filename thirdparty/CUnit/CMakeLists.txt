@@ -14,8 +14,5 @@ if(BUILD_UTEST)
 	list(APPEND libs_temp ${module_name})
 	set(LIBRARIES ${LIBRARIES} ${libs_temp} PARENT_SCOPE)
 
-	list(APPEND _SRCS ${SRC_CUNIT} PARENT_SCOPE)
+        set(_SRCS ${_SRCS} ${SRC_CUNIT} PARENT_SCOPE)
 endif()
-
-
-
