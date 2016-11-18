@@ -30,7 +30,7 @@ If the server receives -2, it exits.
 
 static void error(char* msg) __attribute__ ((noreturn));
 
-int sendData(int sockfd, char* szData, int nLength)
+int socketServerSendData(int sockfd, char* szData, int nLength)
 {
     int     n;
 
@@ -41,7 +41,7 @@ int sendData(int sockfd, char* szData, int nLength)
     return n;
 }
 
-int getData(int sockfd, char* szData, int nLength)
+int socketServerGetData(int sockfd, char* szData, int nLength)
 {
     int n;
 
@@ -78,7 +78,7 @@ int socketServerOpen(int portno)
     return sockfd;
 }
 
-int socketWaitForClient(int sockfd)
+int socketServerWaitForClient(int sockfd)
 {
     int newsockfd;
     struct sockaddr_in cli_addr;

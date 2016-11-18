@@ -1,22 +1,16 @@
 set(module_name socket)
 
-option(BUILD_SOCK_SERVER "Build Socket Server" OFF)
-option(BUILD_SOCK_CLIENT "Build Socket Client" OFF)
-
 if(BUILD_SOCK_SERVER)
 	list(APPEND SRC_SOCKET    	socketServer.h    socketServer.c)
-	if(BUILD_UTEST)
-	    list(APPEND SRC_SOCKET_UTEST utest/socketServerTest.c)
-	    list(APPEND SRC_SOCKET_UTEST utest/socketServerTest.h)
-	endif()
 endif()
 
 if(BUILD_SOCK_CLIENT)
 	list(APPEND SRC_SOCKET    	socketClient.h    socketClient.c)
-	if(BUILD_UTEST)
-	    list(APPEND SRC_SOCKET_UTEST utest/socketClientTest.c)
-	    list(APPEND SRC_SOCKET_UTEST utest/socketClientTest.h)
-	endif()
+endif()
+
+if(BUILD_UTEST)
+	    list(APPEND SRC_SOCKET_UTEST utest/socketTest.c)
+	    list(APPEND SRC_SOCKET_UTEST utest/socketTest.h)
 endif()
 
 add_library(${module_name} ${SRC_SOCKET} ${SRC_SOCKET_UTEST} )

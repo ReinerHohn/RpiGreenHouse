@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "message.pb-c.h"
+
 #include "cc3200CapSens.h"
 #include "socketServer.h"
 #include "pump.h"
@@ -53,6 +55,50 @@ void *commandFunc(void *x_void_ptr)
 
 int main(int argc, char *argv[])
 {
+    AMessage msg = AMESSAGE__INIT; // AMessage
+    void *buf;                     // Buffer to store serialized data
+    unsigned len;                  // Length of serialized data
+
+    size_t msg_len;
+
+    msg.a = atoi("2345");
+
+    msg.has_b = 1;
+    msg.b = atoi("89873");
+
+    len = amessage__get_packed_size(&msg);
+    msg_len = len;
+
+    buf = malloc(len);
+    amessage__pack(&msg,buf);
+
+    fprintf(stderr,"Writing %d serialized bytes\n",len); // See the length of message
+    fwrite(buf,len,1,stdout); // Write to stdout to allow direct command line piping
+
+
+
+  AMessage *retmsg;
+
+  // Unpack the message using protobuf-c.
+  retmsg = amessage__unpack(NULL, msg_len, buf);
+  if (retmsg == NULL)
+  {
+    fprintf(stderr, "error unpacking incoming message\n");
+    exit(1);
+  }
+
+  // display the message's fields.
+  fprintf(stderr, "Received: a=%d",retmsg->a);  // required field
+  if (retmsg->has_b)                   // handle optional field
+    fprintf(stderr, "  b=%d",retmsg->b);
+  fprintf(stderr, "\n");
+
+  // Free the unpacked message
+  amessage__free_unpacked(retmsg, NULL);
+free(buf); // Free the allocated serialized buffer
+
+
+
     int socketServerFd;
     int connSock;
     int adValue;

@@ -1,6 +1,7 @@
-#include "utest/socketServerTest.h"
+#include "utest/socketTest.h"
 
 #include <CUnit.h>
+#include "Automated.h"
 
 void runTests(void);
 

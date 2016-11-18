@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SOURCE_DIR=$(pwd)/../..
+SOURCE_DIR=$(pwd)/..
 BUILD_DIR=$SOURCE_DIR/../test-build
 
 CMAKE_ARGS="$1 -C$SOURCE_DIR/config/configurations/test.cmake"

@@ -5,6 +5,7 @@
 #include <netdb.h>
 #include <netdb.h>
 #include <string.h>
+#include <strings.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
@@ -43,7 +44,7 @@ void socketClientConnect(int sockfd, struct hostent* server, int portno)
     }
 }
 
-int sendData(int sockfd, char *buffer, int nLength)
+int socketClientSendData(int sockfd, char *buffer, int nLength)
 {
     int n;
 
